@@ -3,6 +3,11 @@ CS451_FlashcardApp
 
 Final project for CS451
 
+Jon Hopkins  
+Jesse Kuehn  
+Rishir Patel  
+Sanjana Raj
+
 Flashcard decks are composed of flashcards, which are composed of a weight and any number of sides. Each side has a label, text, and a weight.
 
 The weight of the card is used to draw incorrect cards more often. The weight on the sides is so a side that is gotten incorrect more often can be displayed more.
