@@ -1,3 +1,15 @@
+/**
+ * FlashcardSide.java: object for a side of a card
+ * 
+ * This file is part of FlashcardApp
+ * 
+ * Contributors:
+ * Jon Hopkins
+ * Jesse Kuehn
+ * Rishir Patel
+ * Sanjana Raj
+ */
+
 package group8.cs451.drexel;
 
 public class FlashcardSide {
