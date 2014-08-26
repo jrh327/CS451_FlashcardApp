@@ -1,3 +1,15 @@
+/**
+ * Flashcard.java: object for a flashcard
+ * 
+ * This file is part of FlashcardApp
+ * 
+ * Contributors:
+ * Jon Hopkins
+ * Jesse Kuehn
+ * Rishir Patel
+ * Sanjana Raj
+ */
+
 package group8.cs451.drexel;
 
 import java.util.Vector;
