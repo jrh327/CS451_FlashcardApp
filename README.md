@@ -38,3 +38,7 @@ The SQLite database will be as follows:
   - `ID`, `CardID`, `Label`, `Text`, `Weight`
 
 Support for images and audio may be added later
+
+This project uses the Sqlite4Java library, which can be found at:  
+http://code.google.com/p/sqlite4java/downloads/detail?name=sqlite4java-282.zip  
+Download this and add it to the class path of the project
