@@ -24,8 +24,11 @@ public class SQLiteHandler {
 	private String _delimiter = "[,]";
 	
 	/**
-	 * Creates a connection to the given file and return a handler object<br>
-	 * If the database does not exist yet, it is created
+	 * Creates a connection to the given file and return a handler object.<br>
+	 * If the database does not exist yet, it is created.<br>
+	 * If a connection to this database already exists in this thread,
+	 * a new connection is not created, but an object with the existing
+	 * connection is returned.
 	 * 
 	 * @param inputFile The path to the SQLite database file, or null for an in-memory database
 	 * @throws SQLiteException
