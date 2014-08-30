@@ -45,7 +45,7 @@ public class Main {
 			sqlite.delete("Decks", "Name = ?", "TestDeck2");
 			
 			ArrayList<ArrayList<String>> rows = sqlite.select("Decks", "*", "", "");
-			for (int i = 0; i < arr.size(); i++) {
+			for (int i = 0; i < rows.size(); i++) {
 				ArrayList<String> row = rows.get(i);
 				System.out.print("Row " + i + ": ");
 				for (int j = 0; j < row.size(); j++) {
