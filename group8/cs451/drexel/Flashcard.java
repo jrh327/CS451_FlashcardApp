@@ -15,24 +15,33 @@ package group8.cs451.drexel;
 import java.util.Vector;
 
 public class Flashcard {
+	private int id;
 	private int weight;
 	private final int MIN_WEIGHT = 0;
 	private final int MAX_WEIGHT = 100;
 	private Vector<FlashcardSide> sides;
+	private boolean isDirty = false;
 	
-	public Flashcard() {
+	public Flashcard(int id) {
+		this.id = id;
 		this.weight = (MAX_WEIGHT + MIN_WEIGHT) / 2;
 		this.sides = new Vector<FlashcardSide>();
 	}
 	
-	public Flashcard(Vector<FlashcardSide> sides) {
+	public Flashcard(int id, Vector<FlashcardSide> sides) {
+		this.id = id;
 		this.weight = (MAX_WEIGHT + MIN_WEIGHT) / 2;
 		this.sides = copySides(sides);
 	}
 	
-	public Flashcard(Vector<FlashcardSide> sides, int weight) {
+	public Flashcard(int id, Vector<FlashcardSide> sides, int weight) {
+		this.id = id;
 		this.weight = boundWeight(weight);
 		this.sides = copySides(sides);
+	}
+	
+	public int getID() {
+		return this.id;
 	}
 	
 	public int getWeight() {
@@ -48,6 +57,7 @@ public class Flashcard {
 			return null;
 		}
 		
+		// TODO: return an actually random side
 		return this.sides.get(0);
 	}
 	
@@ -58,6 +68,30 @@ public class Flashcard {
 		
 		// TODO: return random side based on weights
 		return this.sides.get(0);
+	}
+	
+	public void setWeight(int weight) {
+		this.weight = boundWeight(weight);
+		this.isDirty = true;
+	}
+	
+	public void addSide(FlashcardSide side) {
+		if (this.sides.contains(side)) {
+			return;
+		}
+		this.sides.add(side);
+	}
+	
+	public void removeSide(FlashcardSide side) {
+		this.sides.remove(side);
+	}
+	
+	public boolean isDirty() {
+		return this.isDirty;
+	}
+	
+	public void markDirty() {
+		this.isDirty = true;
 	}
 	
 	private int boundWeight(int w) {
@@ -80,10 +114,32 @@ public class Flashcard {
 		
 		for (int i = 0; i < numSides; i++) {
 			FlashcardSide curSide = sides.get(i);
-			FlashcardSide newSide = new FlashcardSide(curSide.getLabel(), curSide.getText(), curSide.getWeight());
+			FlashcardSide newSide = new FlashcardSide(curSide.getID(), curSide.getLabel(), curSide.getText(), curSide.getWeight());
 			copy.add(newSide);
 		}
 		
 		return copy;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Flashcard)) {
+			return false;
+		}
+		
+		Flashcard f = (Flashcard)o;
+		if (this.weight != f.weight) {
+			return false;
+		}
+		if (this.sides.size() != f.sides.size()) {
+			return false;
+		}
+		for (int i = 0; i < this.sides.size(); i++) {
+			if (!this.sides.get(i).equals(f.sides.get(i))) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 }
