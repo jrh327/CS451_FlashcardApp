@@ -109,7 +109,7 @@ public class SQLiteHandler {
 	public ArrayList<String> selectColumn(String table, String column, String where, String args) throws SQLiteException {
 		String query = "SELECT " + column + " FROM " + table;
 		if (where.trim().length() > 0) {
-			query += "WHERE " + where;
+			query += " WHERE " + where;
 		}
 		
 		SQLiteStatement st = _db.prepare(query);
@@ -167,7 +167,7 @@ public class SQLiteHandler {
 	public ArrayList<ArrayList<String>> select(String table, String columns, String where, String args) throws SQLiteException {
 		String query = "SELECT " + columns + " FROM " + table;
 		if (where.trim().length() > 0) {
-			query += "WHERE " + where;
+			query += " WHERE " + where;
 		}
 		
 		SQLiteStatement st = _db.prepare(query);
