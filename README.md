@@ -30,7 +30,7 @@ H20
 what is the **Chemical Name**?
 
 The SQLite database will be as follows:
-- Table `Deck`
+- Table `Decks`
   - `ID`, `Name`
 - Table `Cards`
   - `ID`, `DeckID`, `Weight`
