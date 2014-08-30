@@ -51,7 +51,7 @@ public class SQLiteHandler {
 	 * 
 	 * 
 	 * @param query The parameterized SELECT statement to execute
-	 * @param args Comma-separated parameters for the statement
+	 * @param args Comma-separated parameters for the select
 	 * @return The value selected
 	 * @throws SQLiteException
 	 */
@@ -101,8 +101,8 @@ public class SQLiteHandler {
 	 * 
 	 * @param table - The table to select from
 	 * @param column - The column to select
-	 * @param where - WHERE clause of the select
-	 * @param args - parameters of the WHERE clause
+	 * @param where - The parameterized WHERE clause of the select
+	 * @param args - Comma-separated parameters of the WHERE clause
 	 * @return An arraylist of selected values
 	 * @throws SQLiteException
 	 */
@@ -155,6 +155,64 @@ public class SQLiteHandler {
 	}
 	
 	/**
+	 * Selects any number of columns and rows from a table
+	 * 
+	 * @param table The table to select from
+	 * @param columns The columns to select from, or * for all columns
+	 * @param where The parameterized WHERE clause for the select
+	 * @param args Comma-separated parameters of the WHERE clause
+	 * @return An arraylist of arraylists representing the returned rows
+	 * @throws SQLiteException
+	 */
+	public ArrayList<ArrayList<String>> select(String table, String columns, String where, String args) throws SQLiteException {
+		String query = "SELECT " + columns + " FROM " + table;
+		if (where.trim().length() > 0) {
+			query += "WHERE " + where;
+		}
+		
+		SQLiteStatement st = _db.prepare(query);
+		String[] parameters;
+		
+		if (null != args && !args.isEmpty()) {
+			parameters = args.split(_delimiter);
+			for (int i = 0; i < parameters.length; i++) {
+				st.bind(i + 1, parameters[i]);
+			}
+		}
+		
+		ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+		try {
+			int columnsCount = st.columnCount();
+			while (st.step()) {
+				ArrayList<String> row = new ArrayList<String>();
+				for (int i = 0; i < columnsCount; i++) {
+					int type = st.columnType(i);
+					
+					switch (type) {
+					case SQLiteConstants.SQLITE_INTEGER:
+						row.add(String.valueOf(st.columnInt(i)));
+						break;
+						
+					case SQLiteConstants.SQLITE_TEXT:
+						row.add(st.columnString(i));
+						break;
+						
+					default:
+						break;
+					}
+				}
+				list.add(row);
+			}
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		} finally {
+			st.dispose();
+		}
+		
+		return list;
+	}
+	
+	/**
 	 * Update values in a table
 	 * <br><br>
 	 * Example call:<br>
@@ -163,8 +221,8 @@ public class SQLiteHandler {
 	 * @param table The table being updated
 	 * @param columns Comma-separated list of columns being updated
 	 * @param values Comma-separated list of values, matched up to the names in `columns` 
-	 * @param where WHERE clause of the update
-	 * @param args Parameters of the WHERE clause
+	 * @param where The parameterized WHERE clause of the update
+	 * @param args Comma-separated parameters of the WHERE clause
 	 * @return false if an exception occurs or if columns or values is empty, otherwise true
 	 * @throws SQLiteException
 	 */
@@ -194,6 +252,42 @@ public class SQLiteHandler {
 			}
 			for (int i = 0; i < parameters.length; i++) {
 				st.bind(i + vals.length + 1, parameters[i]);
+			}
+			st.step();
+		} catch (SQLiteException e) {
+			System.err.println(e.getMessage());
+			success = false;
+		} finally {
+			st.dispose();
+		}
+		
+		return success;
+	}
+	
+	/**
+	 * Deletes row(s) from a table
+	 * 
+	 * @param table The table to delete from
+	 * @param where The parameterized WHERE clause for the delete
+	 * @param args Comma-separated parameters for the WHERE clause
+	 * @return
+	 * @throws SQLiteException
+	 */
+	public boolean delete(String table, String where, String args) throws SQLiteException {
+		String[] parameters = args.split(_delimiter);
+		
+		String query = "DELETE FROM " + table;
+		
+		if (where.trim().length() > 0) {
+			query += " WHERE " + where;
+		}
+		
+		SQLiteStatement st = _db.prepare(query);
+		boolean success = true;
+		
+		try {
+			for (int i = 0; i < parameters.length; i++) {
+				st.bind(i + 1, parameters[i]);
 			}
 			st.step();
 		} catch (SQLiteException e) {
