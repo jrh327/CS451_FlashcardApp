@@ -13,30 +13,39 @@
 package group8.cs451.drexel;
 
 public class FlashcardSide {
+	private int id;
 	private int weight;
 	private final int MIN_WEIGHT = 0;
 	private final int MAX_WEIGHT = 100;
 	private String text;
 	private String label;
+	private boolean isDirty = false;
 	//private Image image;
 	//private Audio audio;
 	
-	public FlashcardSide() {
+	public FlashcardSide(int id) {
+		this.id = id;
 		this.weight = (MAX_WEIGHT + MIN_WEIGHT) / 2;
 		this.text = "";
 		this.label = "";
 	}
 	
-	public FlashcardSide(String label, String text) {
+	public FlashcardSide(int id, String label, String text) {
+		this.id = id;
 		this.weight = (MAX_WEIGHT + MIN_WEIGHT) / 2;
 		this.text = text;
 		this.label = label;
 	}
 	
-	public FlashcardSide(String label, String text, int weight) {
+	public FlashcardSide(int id, String label, String text, int weight) {
+		this.id = id;
 		this.weight = boundWeight(weight);
 		this.text = text;
 		this.label = label;
+	}
+	
+	public int getID() {
+		return this.id;
 	}
 	
 	public int getWeight() {
@@ -53,14 +62,25 @@ public class FlashcardSide {
 	
 	public void setWeight(int weight) {
 		this.weight = boundWeight(weight);
+		this.isDirty = true;
 	}
 	
 	public void setText(String text) {
 		this.text = text;
+		this.isDirty = true;
 	}
 	
 	public void setLabel(String label) {
 		this.label = label;
+		this.isDirty = true;
+	}
+	
+	public boolean isDirty() {
+		return this.isDirty;
+	}
+	
+	public void markDirty() {
+		this.isDirty = true;
 	}
 	
 	private int boundWeight(int w) {
@@ -71,5 +91,14 @@ public class FlashcardSide {
 		} else {
 			return w;
 		}
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof FlashcardSide)) {
+			return false;
+		}
+		FlashcardSide fs = (FlashcardSide)o;
+		return (this.weight == fs.weight && this.label.equals(fs.label) && this.text.equals(fs.text));
 	}
 }
