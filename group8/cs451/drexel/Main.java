@@ -12,6 +12,7 @@
 
 package group8.cs451.drexel;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -40,7 +41,8 @@ public class Main {
 				
 				frame.setLocationRelativeTo(null);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+				frame.setPreferredSize(new Dimension(640, 480));
+				//frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 				
 				// Add content to the window
 				frame.add(new MainScreen());
