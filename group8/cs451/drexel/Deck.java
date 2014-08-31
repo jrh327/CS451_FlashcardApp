@@ -35,7 +35,7 @@ public class Deck {
 	public Deck(int id, String name, Vector<Flashcard> cards) {
 		this.id = id;
 		this.name = name;
-		this.cards = copyCards(cards);
+		this.cards = cards;
 	}
 	
 	public int getID() {
@@ -56,7 +56,7 @@ public class Deck {
 	}
 	
 	public void setCards(Vector<Flashcard> cards) {
-		this.cards = copyCards(cards);
+		this.cards = cards;
 	}
 	
 	public void addCard(Flashcard card) {
@@ -76,23 +76,6 @@ public class Deck {
 	
 	public void markDirty() {
 		this.isDirty = true;
-	}
-	
-	private Vector<Flashcard> copyCards(Vector<Flashcard> cards) {
-		if (null == cards || cards.size() == 0) {
-			return new Vector<Flashcard>();
-		}
-		
-		Vector<Flashcard> copy = new Vector<Flashcard>();
-		int numCards = cards.size();
-		
-		for (int i = 0; i < numCards; i++) {
-			Flashcard curCard = cards.get(i);
-			Flashcard newCard = new Flashcard(curCard.getID(), curCard.getSides(), curCard.getWeight());
-			copy.add(newCard);
-		}
-		
-		return copy;
 	}
 	
 	@Override
