@@ -31,13 +31,13 @@ public class Flashcard {
 	public Flashcard(int id, Vector<FlashcardSide> sides) {
 		this.id = id;
 		this.weight = (MAX_WEIGHT + MIN_WEIGHT) / 2;
-		this.sides = copySides(sides);
+		this.sides = sides;
 	}
 	
 	public Flashcard(int id, Vector<FlashcardSide> sides, int weight) {
 		this.id = id;
 		this.weight = boundWeight(weight);
-		this.sides = copySides(sides);
+		this.sides = sides;
 	}
 	
 	public int getID() {
@@ -49,7 +49,7 @@ public class Flashcard {
 	}
 	
 	public Vector<FlashcardSide> getSides() {
-		return copySides(this.sides);
+		return this.sides;
 	}
 	
 	public FlashcardSide getRandomSide() {
@@ -110,23 +110,6 @@ public class Flashcard {
 		} else {
 			return w;
 		}
-	}
-	
-	private Vector<FlashcardSide> copySides(Vector<FlashcardSide> sides) {
-		if (null == sides || sides.size() == 0) {
-			return null;
-		}
-		
-		Vector<FlashcardSide> copy = new Vector<FlashcardSide>();
-		int numSides = sides.size();
-		
-		for (int i = 0; i < numSides; i++) {
-			FlashcardSide curSide = sides.get(i);
-			FlashcardSide newSide = new FlashcardSide(curSide.getID(), curSide.getLabel(), curSide.getText(), curSide.getWeight());
-			copy.add(newSide);
-		}
-		
-		return copy;
 	}
 	
 	@Override
