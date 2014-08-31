@@ -14,7 +14,6 @@ package group8.cs451.drexel;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -23,13 +22,13 @@ import javax.swing.UIManager;
 import com.almworks.sqlite4java.SQLiteException;
 
 public class Main {
-	private Vector<Deck> decks;
-	
 	public static void main(String[] args) {
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				initialSetup();
+				
 				try {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (Exception e) {
@@ -54,8 +53,30 @@ public class Main {
 		});
 	}
 	
+	private static void initialSetup() {
+		SQLiteHandler sqlite;
+		try {
+			sqlite = new SQLiteHandler(Config.DATABASE);
+		} catch (SQLiteException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		// Create all the tables if they don't exist yet
+		// This should only happen the first time the application is run on a computer
+		try {
+			sqlite.createTable(Config.DECK_TABLE, "ID,Name", "INTEGER PRIMARY KEY ASC,CHAR(50) UNIQUE");
+			sqlite.createTable(Config.CARD_TABLE, "ID,DeckID,Weight", "INTEGER PRIMARY KEY ASC,INTEGER,INTEGER");
+			sqlite.createTable(Config.SIDE_TABLE, "ID,CardID,Label,Text,Weight", "INTEGER PRIMARY KEY ASC,INTEGER,CHAR(50),CHAR(100),INTEGER");
+		} catch (SQLiteException e) {
+			e.printStackTrace();
+		} finally {
+			sqlite.close();
+		}
+	}
+	
 	public Main() {
-		//*
+		/*
 		SQLiteHandler sqlite;
 		try {
 			sqlite = new SQLiteHandler(Config.DATABASE);
