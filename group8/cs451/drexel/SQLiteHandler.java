@@ -14,6 +14,9 @@ package group8.cs451.drexel;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.almworks.sqlite4java.SQLiteConnection;
 import com.almworks.sqlite4java.SQLiteConstants;
 import com.almworks.sqlite4java.SQLiteException;
@@ -31,9 +34,11 @@ public class SQLiteHandler {
 	 * connection is returned.
 	 * 
 	 * @param inputFile The path to the SQLite database file, or null for an in-memory database
+	 * @return A SQLiteHandler object with a connection to the database at `inputFile`
 	 * @throws SQLiteException
 	 */
 	public SQLiteHandler(String inputFile) throws SQLiteException {
+		Logger.getLogger("com.almworks.sqlite4java").setLevel(Level.OFF);
 		if (null == inputFile || inputFile.trim().length() == 0) {
 			_db = new SQLiteConnection(null);
 		} else {
