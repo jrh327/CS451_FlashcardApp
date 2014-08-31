@@ -76,10 +76,18 @@ public class Flashcard {
 	}
 	
 	public void addSide(FlashcardSide side) {
+		if (null == this.sides) {
+			this.sides = new Vector<FlashcardSide>();
+		}
 		if (this.sides.contains(side)) {
 			return;
 		}
 		this.sides.add(side);
+		this.isDirty = true;
+	}
+	
+	public void setSides(Vector<FlashcardSide> sides) {
+		this.sides = sides;
 	}
 	
 	public void removeSide(FlashcardSide side) {
@@ -106,7 +114,7 @@ public class Flashcard {
 	
 	private Vector<FlashcardSide> copySides(Vector<FlashcardSide> sides) {
 		if (null == sides || sides.size() == 0) {
-			return new Vector<FlashcardSide>();
+			return null;
 		}
 		
 		Vector<FlashcardSide> copy = new Vector<FlashcardSide>();
@@ -141,5 +149,15 @@ public class Flashcard {
 		}
 		
 		return true;
+	}
+	
+	
+	private String toString = "";
+	public void toString(String string) {
+		this.toString = string;
+	}
+	@Override
+	public String toString() {
+		return this.toString;
 	}
 }
