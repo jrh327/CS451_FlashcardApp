@@ -17,9 +17,11 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -30,12 +32,13 @@ import javax.swing.tree.TreeSelectionModel;
 import com.almworks.sqlite4java.SQLiteException;
 
 public class MainScreen extends JPanel implements TreeSelectionListener {
-	JPanel sidesList;
+	private JPanel sidesList;
+	private CardView cardView;
 	
 	public MainScreen() {
 		setLayout(new BorderLayout());
 		
-		CardView cardView = new CardView();
+		cardView = new CardView();
 		
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Decks");
 		createDecksNodes(top);
@@ -53,6 +56,17 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 		add(cardView, BorderLayout.CENTER);
 	}
 	
+	public void sideViewClicked(SideView sideView) {
+		FlashcardSide side = sideView.getSide();
+		cardView.setSide(new EditSideView(sideView));
+		revalidate();
+	}
+	
+	/**
+	 * Creates a tree-list of Decks and their Flashcards
+	 * 
+	 * @param top The root node of the tree
+	 */
 	private void createDecksNodes(DefaultMutableTreeNode top) {
 		SQLiteHandler sqlite;
 		try {
@@ -98,12 +112,23 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 		}
 	}
 	
+	/**
+	 * Builds a scrollable list of previews of the currently selected card's sides
+	 * 
+	 * @param sides The sides of the currently selected card
+	 */
 	private void createSidesList(Vector<FlashcardSide> sides) {
 		sidesList.removeAll();
+		cardView.setSide(null);
+		
+		JLabel listLabel = new JLabel("Sides");
+		listLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		sidesList.add(listLabel);
+		
 		int numSides = sides.size();
 		for (int i = 0; i < numSides; i++) {
-			SideView sideView = new SideView(sides.get(i));
-			System.out.println("adding sideview for " + sides.get(i).getLabel());
+			SideView sideView = new SideView(this, sides.get(i));
+			sideView.listenForMouseClicks(true);
 			sidesList.add(sideView);
 		}
 		
