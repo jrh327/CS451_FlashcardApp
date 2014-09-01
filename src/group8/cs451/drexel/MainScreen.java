@@ -74,149 +74,11 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 		//Listen for when the selection changes.
 		decksTree.addTreeSelectionListener(this);
 		JPanel pDecks = new JPanel();
-		JButton addDeck = new JButton("Add");
-		addDeck.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				Component source = (Component)event.getSource();
-				String response = JOptionPane.showInputDialog(source, "Enter name of new deck:", "Add a new deck", JOptionPane.QUESTION_MESSAGE);
-				if (null != response && !response.isEmpty()) {
-					DeckOperations.addDeck(decks, response);
-					JPanel pDecks = setupDecksTree();
-					
-					BorderLayout layout = (BorderLayout)getLayout();
-					remove(layout.getLayoutComponent(BorderLayout.WEST));
-					
-					add(new JScrollPane(pDecks), BorderLayout.WEST);
-					validate();
-				}
-			}
-		});
-		JButton removeDeck = new JButton("Remove");
-		removeDeck.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				Component source = (Component)event.getSource();
-				Deck deck;
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode)decksTree.getLastSelectedPathComponent();
-				
-				// Nothing is selected
-				if (node == null) {
-					return;
-				}
-				
-				Object nodeInfo = node.getUserObject();
-				if (nodeInfo instanceof Deck) {
-					deck = (Deck)nodeInfo;
-				} else if (node.isLeaf()) {
-					if (nodeInfo instanceof Flashcard) {
-						node = (DefaultMutableTreeNode)node.getParent();
-						nodeInfo = node.getUserObject();
-						if (nodeInfo instanceof Deck) {
-							deck = (Deck)nodeInfo;
-						} else {
-							return;
-						}
-					} else {
-						return;
-					}
-				} else {
-					return;
-				}
-				
-				int dialogResult = JOptionPane.showConfirmDialog (source, "Remove deck " + deck.getName() + "?", "Remove deck", JOptionPane.YES_NO_OPTION);
-				if (dialogResult == JOptionPane.YES_OPTION){
-					DeckOperations.removeDeck(decks, deck);
-					JPanel pDecks = setupDecksTree();
-					
-					BorderLayout layout = (BorderLayout)getLayout();
-					remove(layout.getLayoutComponent(BorderLayout.WEST));
-					
-					add(new JScrollPane(pDecks), BorderLayout.WEST);
-					validate();
-				}
-			}
-		});
+		JButton addDeck = addDeckButton(decksTree, top);
+		JButton removeDeck = removeDeckButton(decksTree, top);
 		
-		JButton addCard = new JButton("Add");
-		addCard.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				Component source = (Component)event.getSource();
-				Deck deck;
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode)decksTree.getLastSelectedPathComponent();
-				
-				// Nothing is selected
-				if (node == null) {
-					return;
-				}
-				
-				Object nodeInfo = node.getUserObject();
-				if (nodeInfo instanceof Deck) {
-					deck = (Deck)nodeInfo;
-				} else if (node.isLeaf()) {
-					if (nodeInfo instanceof Flashcard) {
-						node = (DefaultMutableTreeNode)node.getParent();
-						nodeInfo = node.getUserObject();
-						if (nodeInfo instanceof Deck) {
-							deck = (Deck)nodeInfo;
-						} else {
-							return;
-						}
-					} else {
-						return;
-					}
-				} else {
-					return;
-				}
-				
-				int dialogResult = JOptionPane.showConfirmDialog (source, "Add a card to " + deck.getName() + "?", "Add card", JOptionPane.YES_NO_OPTION);
-				if (dialogResult == JOptionPane.YES_OPTION){
-					DeckOperations.addNewCardToDeck(deck);
-					JPanel pDecks = setupDecksTree();
-					
-					BorderLayout layout = (BorderLayout)getLayout();
-					remove(layout.getLayoutComponent(BorderLayout.WEST));
-					
-					add(new JScrollPane(pDecks), BorderLayout.WEST);
-					validate();
-				}
-			}
-		});
-		JButton removeCard = new JButton("Remove");
-		removeCard.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				Component source = (Component)event.getSource();
-				Flashcard card;
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode)decksTree.getLastSelectedPathComponent();
-				
-				// Nothing is selected
-				if (node == null) {
-					return;
-				}
-				
-				Object nodeInfo = node.getUserObject();
-				if (nodeInfo instanceof Flashcard) {
-					card = (Flashcard)nodeInfo;
-				} else {
-					return;
-				}
-				
-				Deck deck = (Deck)((DefaultMutableTreeNode)node.getParent()).getUserObject();
-				
-				int dialogResult = JOptionPane.showConfirmDialog (source, "Remove Card " + (node.getParent().getIndex(node) + 1)
-						+ " from " + deck.getName() + "?", "Remove card", JOptionPane.YES_NO_OPTION);
-				if(dialogResult == JOptionPane.YES_OPTION){
-					DeckOperations.removeCardFromDeck(deck, card);
-					JPanel pDecks = setupDecksTree();
-					
-					BorderLayout layout = (BorderLayout)getLayout();
-					remove(layout.getLayoutComponent(BorderLayout.WEST));
-					
-					add(new JScrollPane(pDecks), BorderLayout.WEST);
-					validate();
-					
-					createSidesList(null);
-				}
-			}
-		});
+		JButton addCard = addCardButton(decksTree, top);
+		JButton removeCard = removeCardButton(decksTree, top);
 		
 		JPanel westButtons = new JPanel();
 		westButtons.setLayout(new BoxLayout(westButtons, BoxLayout.Y_AXIS));
@@ -320,6 +182,169 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 		}
 		
 		revalidate();
+	}
+	
+	private JButton addDeckButton(final JTree decksTree, final DefaultMutableTreeNode top) {
+		JButton addDeck = new JButton("Add");
+		addDeck.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				Component source = (Component)event.getSource();
+				String response = JOptionPane.showInputDialog(source, "Enter name of new deck:", "Add a new deck", JOptionPane.QUESTION_MESSAGE);
+				if (null != response && !response.isEmpty()) {
+					DeckOperations.addDeck(decks, response);
+					JPanel pDecks = setupDecksTree();
+					
+					BorderLayout layout = (BorderLayout)getLayout();
+					remove(layout.getLayoutComponent(BorderLayout.WEST));
+					
+					add(new JScrollPane(pDecks), BorderLayout.WEST);
+					validate();
+				}
+			}
+		});
+		
+		return addDeck;
+	}
+	
+	private JButton removeDeckButton(final JTree decksTree, final DefaultMutableTreeNode top) {
+		JButton removeDeck = new JButton("Remove");
+		removeDeck.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				Component source = (Component)event.getSource();
+				Deck deck;
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode)decksTree.getLastSelectedPathComponent();
+				
+				// Nothing is selected
+				if (node == null) {
+					return;
+				}
+				
+				Object nodeInfo = node.getUserObject();
+				if (nodeInfo instanceof Deck) {
+					deck = (Deck)nodeInfo;
+				} else if (node.isLeaf()) {
+					if (nodeInfo instanceof Flashcard) {
+						node = (DefaultMutableTreeNode)node.getParent();
+						nodeInfo = node.getUserObject();
+						if (nodeInfo instanceof Deck) {
+							deck = (Deck)nodeInfo;
+						} else {
+							return;
+						}
+					} else {
+						return;
+					}
+				} else {
+					return;
+				}
+				
+				int dialogResult = JOptionPane.showConfirmDialog (source, "Remove deck " + deck.getName() + "?", "Remove deck", JOptionPane.YES_NO_OPTION);
+				if (dialogResult == JOptionPane.YES_OPTION){
+					DeckOperations.removeDeck(decks, deck);
+					JPanel pDecks = setupDecksTree();
+					
+					BorderLayout layout = (BorderLayout)getLayout();
+					remove(layout.getLayoutComponent(BorderLayout.WEST));
+					
+					add(new JScrollPane(pDecks), BorderLayout.WEST);
+					validate();
+				}
+			}
+		});
+		
+		return removeDeck;
+	}
+	
+	private JButton addCardButton(final JTree decksTree, final DefaultMutableTreeNode top) {
+		JButton addCard = new JButton("Add");
+		addCard.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				Component source = (Component)event.getSource();
+				Deck deck;
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode)decksTree.getLastSelectedPathComponent();
+				
+				// Nothing is selected
+				if (node == null) {
+					return;
+				}
+				
+				Object nodeInfo = node.getUserObject();
+				if (nodeInfo instanceof Deck) {
+					deck = (Deck)nodeInfo;
+				} else if (node.isLeaf()) {
+					if (nodeInfo instanceof Flashcard) {
+						node = (DefaultMutableTreeNode)node.getParent();
+						nodeInfo = node.getUserObject();
+						if (nodeInfo instanceof Deck) {
+							deck = (Deck)nodeInfo;
+						} else {
+							return;
+						}
+					} else {
+						return;
+					}
+				} else {
+					return;
+				}
+				
+				int dialogResult = JOptionPane.showConfirmDialog (source, "Add a card to " + deck.getName() + "?", "Add card", JOptionPane.YES_NO_OPTION);
+				if (dialogResult == JOptionPane.YES_OPTION){
+					DeckOperations.addNewCardToDeck(deck);
+					JPanel pDecks = setupDecksTree();
+					
+					BorderLayout layout = (BorderLayout)getLayout();
+					remove(layout.getLayoutComponent(BorderLayout.WEST));
+					
+					add(new JScrollPane(pDecks), BorderLayout.WEST);
+					validate();
+				}
+			}
+		});
+		
+		return addCard;
+	}
+	
+	private JButton removeCardButton(final JTree decksTree, final DefaultMutableTreeNode top) {
+		JButton removeCard = new JButton("Remove");
+		removeCard.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				Component source = (Component)event.getSource();
+				Flashcard card;
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode)decksTree.getLastSelectedPathComponent();
+				
+				// Nothing is selected
+				if (node == null) {
+					return;
+				}
+				
+				Object nodeInfo = node.getUserObject();
+				if (nodeInfo instanceof Flashcard) {
+					card = (Flashcard)nodeInfo;
+				} else {
+					return;
+				}
+				
+				Deck deck = (Deck)((DefaultMutableTreeNode)node.getParent()).getUserObject();
+				
+				int dialogResult = JOptionPane.showConfirmDialog (source, "Remove Card " + (node.getParent().getIndex(node) + 1)
+						+ " from " + deck.getName() + "?", "Remove card", JOptionPane.YES_NO_OPTION);
+				if(dialogResult == JOptionPane.YES_OPTION){
+					DeckOperations.removeCardFromDeck(deck, card);
+					JPanel pDecks = setupDecksTree();
+					
+					BorderLayout layout = (BorderLayout)getLayout();
+					remove(layout.getLayoutComponent(BorderLayout.WEST));
+					
+					add(new JScrollPane(pDecks), BorderLayout.WEST);
+					validate();
+					
+					createSidesList(null);
+				}
+			}
+		});
+		
+		
+		return removeCard;
 	}
 	
 	@Override
