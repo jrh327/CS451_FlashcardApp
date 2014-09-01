@@ -107,6 +107,7 @@ public class DeckOperations {
 				sqlite.update(Config.DECK_TABLE, "Name", deck.getName(), "ID = ?", String.valueOf(deck.getID()));
 				deck.markClean();
 			}
+			
 			Vector<Flashcard> cards = deck.getCards();
 			for (int i = 0; i < cards.size(); i++) {
 				Flashcard card = cards.get(i);
@@ -115,12 +116,17 @@ public class DeckOperations {
 					card.markClean();
 				}
 				Vector<FlashcardSide> sides = card.getSides();
+				if (null == sides) {
+					continue; // this happens when a card hasn't been loaded
+				}
+				
 				for (int j = 0; j < sides.size(); j++) {
 					FlashcardSide side = sides.get(j);
+					
 					if (side.isDirty()) {
 						sqlite.update(Config.SIDE_TABLE, "Label,Text,Weight",
 								side.getLabel() + "," + side.getText() + "," + side.getWeight(),
-								"CardID = ?", String.valueOf(card.getID()));
+								"ID = ?", String.valueOf(side.getID()));
 						side.markClean();
 					}
 				}
@@ -190,6 +196,7 @@ public class DeckOperations {
 	
 	/**
 	 * Adds a new card to the specified deck
+	 * The new card comes with two blank sides
 	 * 
 	 * @param deck The deck to add the card to
 	 */
@@ -207,6 +214,17 @@ public class DeckOperations {
 			int cardID = (int)sqlite.getLastInsertId();
 			Flashcard card = new Flashcard(cardID);
 			card.markDirty();
+			
+			addNewSideToCard(card);
+			addNewSideToCard(card);
+			
+			Vector<FlashcardSide> sides = card.getSides();
+			sides.get(0).setLabel("Side 1");
+			sides.get(1).setLabel("Side 2");
+			
+			deck.addCard(card);
+			
+			saveDeck(deck);
 		} catch (SQLiteException e) {
 			e.printStackTrace();
 		} finally {
