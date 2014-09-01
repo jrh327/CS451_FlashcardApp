@@ -221,6 +221,18 @@ public class SQLiteHandler {
 	}
 	
 	/**
+	 * Gets the ROWID of the row last inserted in this connection
+	 * Will return the highest value in the column of type
+	 * INTEGER PRIMARY KEY if there is one
+	 * 
+	 * @return The rowid of the last successful insert, or 0 if nothing has been inserted
+	 * @throws SQLiteException
+	 */
+	public long getLastInsertId() throws SQLiteException {
+		return _db.getLastInsertId();
+	}
+	
+	/**
 	 * Update values in a table
 	 * <br><br>
 	 * Example call:<br>
