@@ -1,5 +1,5 @@
 /**
- * CardView.java: displays a card's sides
+ * EditSideView.java: displays a form for editing cards
  * 
  * This file is part of FlashcardApp
  * 
@@ -14,7 +14,6 @@ package group8.cs451.drexel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

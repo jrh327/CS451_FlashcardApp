@@ -1,5 +1,5 @@
 /**
- * CardView.java: displays a card's sides
+ * SideView.java: displays a side of a card
  * 
  * This file is part of FlashcardApp
  * 
