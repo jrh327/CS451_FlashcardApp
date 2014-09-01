@@ -13,11 +13,16 @@
 package group8.cs451.drexel;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -34,32 +39,62 @@ import com.almworks.sqlite4java.SQLiteException;
 public class MainScreen extends JPanel implements TreeSelectionListener {
 	private JPanel sidesList;
 	private CardView cardView;
+	private Vector<Deck> decks;
+	
+	private final MainScreen self = this;
 	
 	public MainScreen() {
+		decks = DeckOperations.loadDecks();
+		
 		setLayout(new BorderLayout());
 		
 		cardView = new CardView();
 		
-		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Decks");
-		createDecksNodes(top);
-		
-		JTree decksTree = new JTree(top);
-		decksTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		//Listen for when the selection changes.
-		decksTree.addTreeSelectionListener(this);
 		
 		sidesList = new JPanel();
 		sidesList.setLayout(new BoxLayout(sidesList, BoxLayout.Y_AXIS));
 		
-		add(new JScrollPane(decksTree), BorderLayout.WEST);
+		JPanel pDecks = setupDecksTree();
+		
+		add(new JScrollPane(pDecks), BorderLayout.WEST);
 		add(new JScrollPane(sidesList), BorderLayout.EAST);
 		add(cardView, BorderLayout.CENTER);
 	}
 	
 	public void sideViewClicked(SideView sideView) {
-		FlashcardSide side = sideView.getSide();
 		cardView.setSide(new EditSideView(sideView));
 		revalidate();
+	}
+	
+	public JPanel setupDecksTree() {
+		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Decks");
+		createDecksNodes(top);
+		
+		JTree decksTree = new JTree(top);
+		decksTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		
+		//Listen for when the selection changes.
+		decksTree.addTreeSelectionListener(this);
+		JPanel pDecks = new JPanel();
+		JButton addDeck = new JButton("Add Deck");
+		addDeck.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				Component source = (Component)event.getSource();
+				String response = JOptionPane.showInputDialog(source, "Enter name of new deck:", "Add a new deck", JOptionPane.QUESTION_MESSAGE);
+				if (!response.isEmpty()) {
+					DeckOperations.addDeck(decks, response);
+					JPanel pDecks = setupDecksTree();
+					add(new JScrollPane(pDecks), BorderLayout.WEST);
+					revalidate();
+				}
+			}
+		});
+		
+		pDecks.setLayout(new BorderLayout());
+		pDecks.add(decksTree, BorderLayout.CENTER);
+		pDecks.add(addDeck, BorderLayout.SOUTH);
+		
+		return pDecks;
 	}
 	
 	/**
