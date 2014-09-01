@@ -41,14 +41,33 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 	private Flashcard selectedCard;
 	private CardView cardView;
 	private Vector<Deck> decks;
+	private boolean reviewing;
 	
 	public MainScreen() {
 		decks = DeckOperations.loadDecks();
 		
 		setLayout(new BorderLayout());
+		setupMainScreen();
+	}
+	
+	public void setupMainScreen() {
+		BorderLayout layout = (BorderLayout)getLayout();
+		Component c = layout.getLayoutComponent(BorderLayout.WEST);
+		if (null != c) {
+			remove(c);
+		}
+		c = layout.getLayoutComponent(BorderLayout.EAST);
+		if (null != c) {
+			remove(c);
+		}
+		c = layout.getLayoutComponent(BorderLayout.CENTER);
+		if (null != c) {
+			remove(c);
+		}
+		
+		reviewing = false;
 		
 		cardView = new CardView();
-		
 		
 		sidesList = new JPanel();
 		sidesList.setLayout(new BorderLayout());
@@ -58,6 +77,8 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 		add(new JScrollPane(pDecks), BorderLayout.WEST);
 		add(new JScrollPane(sidesList), BorderLayout.EAST);
 		add(cardView, BorderLayout.CENTER);
+		
+		revalidate();
 	}
 	
 	public void sideViewClicked(SideView sideView) {
@@ -80,14 +101,21 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 		
 		JButton addCard = addCardButton(decksTree, top);
 		JButton removeCard = removeCardButton(decksTree, top);
+		JButton reviewDeck = reviewDeckButton(decksTree, top);
 		
 		JPanel westButtons = new JPanel();
 		westButtons.setLayout(new BoxLayout(westButtons, BoxLayout.Y_AXIS));
 		
 		JPanel deckButtons = new JPanel();
-		deckButtons.setLayout(new BoxLayout(deckButtons, BoxLayout.X_AXIS));
-		deckButtons.add(addDeck);
-		deckButtons.add(removeDeck);
+		deckButtons.setLayout(new BorderLayout());
+		
+		JPanel deckAddRemove = new JPanel();
+		deckAddRemove.setLayout(new BoxLayout(deckAddRemove, BoxLayout.X_AXIS));
+		deckAddRemove.add(addDeck);
+		deckAddRemove.add(removeDeck);
+		
+		deckButtons.add(reviewDeck, BorderLayout.SOUTH);
+		deckButtons.add(deckAddRemove, BorderLayout.CENTER);
 		
 		westButtons.add(new JLabel("Deck"));
 		westButtons.add(deckButtons);
@@ -360,6 +388,67 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 		
 		
 		return removeCard;
+	}
+	
+	private JButton reviewDeckButton(final JTree decksTree, final DefaultMutableTreeNode top) {
+		final JButton reviewDeck = new JButton("Review");
+		reviewDeck.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				Deck deck;
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode)decksTree.getLastSelectedPathComponent();
+				
+				// Nothing is selected
+				if (node == null) {
+					return;
+				}
+				
+				Object nodeInfo = node.getUserObject();
+				if (nodeInfo instanceof Deck) {
+					deck = (Deck)nodeInfo;
+				} else if (node.isLeaf()) {
+					if (nodeInfo instanceof Flashcard) {
+						node = (DefaultMutableTreeNode)node.getParent();
+						nodeInfo = node.getUserObject();
+						if (nodeInfo instanceof Deck) {
+							deck = (Deck)nodeInfo;
+						} else {
+							return;
+						}
+					} else {
+						return;
+					}
+				} else {
+					return;
+				}
+				
+				reviewing = true;
+				
+				// set up review mode
+				BorderLayout layout = (BorderLayout)getLayout();
+				remove(layout.getLayoutComponent(BorderLayout.CENTER));
+				remove(layout.getLayoutComponent(BorderLayout.EAST));
+				remove(layout.getLayoutComponent(BorderLayout.WEST));
+				
+				JButton editDeck = editDeckButton();
+				
+				add(editDeck, BorderLayout.WEST);
+				add(new DeckReview(deck), BorderLayout.CENTER);
+				validate();
+			}
+		});
+		
+		return reviewDeck;
+	}
+	
+	private JButton editDeckButton() {
+		JButton editDeck = new JButton("Back to Edit Mode");
+		editDeck.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				setupMainScreen();
+			}
+		});
+		
+		return editDeck;
 	}
 	
 	private JButton addSideButton() {

@@ -50,24 +50,6 @@ public class Flashcard {
 		return this.sides;
 	}
 	
-	public FlashcardSide getRandomSide() {
-		if (null == this.sides || this.sides.size() == 0) {
-			return null;
-		}
-		
-		// TODO: return an actually random side
-		return this.sides.get(0);
-	}
-	
-	public FlashcardSide getWeightedSide() {
-		if (null == this.sides || this.sides.size() == 0) {
-			return null;
-		}
-		
-		// TODO: return random side based on weights
-		return this.sides.get(0);
-	}
-	
 	public void setWeight(int weight) {
 		this.weight = boundWeight(weight);
 		this.isDirty = true;
