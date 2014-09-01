@@ -66,8 +66,8 @@ public class Main {
 		// This should only happen the first time the application is run on a computer
 		try {
 			sqlite.createTable(Config.DECK_TABLE, "ID,Name", "INTEGER PRIMARY KEY ASC,CHAR(50) UNIQUE");
-			sqlite.createTable(Config.CARD_TABLE, "ID,DeckID,Weight", "INTEGER PRIMARY KEY ASC,INTEGER,INTEGER");
-			sqlite.createTable(Config.SIDE_TABLE, "ID,CardID,Label,Text,Weight", "INTEGER PRIMARY KEY ASC,INTEGER,CHAR(50),CHAR(100),INTEGER");
+			sqlite.createTable(Config.CARD_TABLE, "ID,DeckID,Weight", "INTEGER PRIMARY KEY ASC,INTEGER,INTEGER DEFAULT 0");
+			sqlite.createTable(Config.SIDE_TABLE, "ID,CardID,Label,Text,Weight", "INTEGER PRIMARY KEY ASC,INTEGER,CHAR(50) DEFAULT '',CHAR(100) DEFAULT '',INTEGER DEFAULT 0");
 		} catch (SQLiteException e) {
 			e.printStackTrace();
 		} finally {
