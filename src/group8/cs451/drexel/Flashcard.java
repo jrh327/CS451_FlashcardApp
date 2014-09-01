@@ -17,20 +17,18 @@ import java.util.Vector;
 public class Flashcard {
 	private int id;
 	private int weight;
-	private final int MIN_WEIGHT = 0;
-	private final int MAX_WEIGHT = 100;
 	private Vector<FlashcardSide> sides;
 	private boolean isDirty = false;
 	
 	public Flashcard(int id) {
 		this.id = id;
-		this.weight = (MAX_WEIGHT + MIN_WEIGHT) / 2;
+		this.weight = (Config.MAX_WEIGHT + Config.MIN_WEIGHT) / 2;
 		this.sides = new Vector<FlashcardSide>();
 	}
 	
 	public Flashcard(int id, Vector<FlashcardSide> sides) {
 		this.id = id;
-		this.weight = (MAX_WEIGHT + MIN_WEIGHT) / 2;
+		this.weight = (Config.MAX_WEIGHT + Config.MIN_WEIGHT) / 2;
 		this.sides = sides;
 	}
 	
@@ -102,11 +100,15 @@ public class Flashcard {
 		this.isDirty = true;
 	}
 	
+	public void markClean() {
+		this.isDirty = false;
+	}
+	
 	private int boundWeight(int w) {
-		if (w < MIN_WEIGHT) {
-			return MIN_WEIGHT;
-		} else if (w > MAX_WEIGHT) {
-			return MAX_WEIGHT;
+		if (w < Config.MIN_WEIGHT) {
+			return Config.MIN_WEIGHT;
+		} else if (w > Config.MAX_WEIGHT) {
+			return Config.MAX_WEIGHT;
 		} else {
 			return w;
 		}
@@ -122,13 +124,20 @@ public class Flashcard {
 		if (this.weight != f.weight) {
 			return false;
 		}
-		if (this.sides.size() != f.sides.size()) {
-			return false;
-		}
-		for (int i = 0; i < this.sides.size(); i++) {
-			if (!this.sides.get(i).equals(f.sides.get(i))) {
+		
+		if (null != this.sides && null != f.sides) {
+			if (this.sides.size() != f.sides.size()) {
 				return false;
 			}
+			for (int i = 0; i < this.sides.size(); i++) {
+				if (!this.sides.get(i).equals(f.sides.get(i))) {
+					return false;
+				}
+			}
+		} else if (null == this.sides && null == f.sides) {
+			return true;
+		} else {
+			return false;
 		}
 		
 		return true;

@@ -105,25 +105,26 @@ public class DeckOperations {
 		try {
 			if (deck.isDirty()) {
 				sqlite.update(Config.DECK_TABLE, "Name", deck.getName(), "ID = ?", String.valueOf(deck.getID()));
+				deck.markClean();
 			}
 			Vector<Flashcard> cards = deck.getCards();
 			for (int i = 0; i < cards.size(); i++) {
 				Flashcard card = cards.get(i);
 				if (card.isDirty()) {
 					sqlite.update(Config.CARD_TABLE, "Weight", String.valueOf(card.getWeight()), "ID = ?", String.valueOf(card.getID()));
-					
-					Vector<FlashcardSide> sides = card.getSides();
-					for (int j = 0; j < sides.size(); j++) {
-						FlashcardSide side = sides.get(j);
-						if (side.isDirty()) {
-							sqlite.update(Config.SIDE_TABLE, "Label,Text,Weight",
-									side.getLabel() + "," + side.getText() + "," + side.getWeight(),
-									"CardID = ?", String.valueOf(card.getID()));
-						}
+					card.markClean();
+				}
+				Vector<FlashcardSide> sides = card.getSides();
+				for (int j = 0; j < sides.size(); j++) {
+					FlashcardSide side = sides.get(j);
+					if (side.isDirty()) {
+						sqlite.update(Config.SIDE_TABLE, "Label,Text,Weight",
+								side.getLabel() + "," + side.getText() + "," + side.getWeight(),
+								"CardID = ?", String.valueOf(card.getID()));
+						side.markClean();
 					}
 				}
 			}
-			
 		} catch (SQLiteException e) {
 			e.printStackTrace();
 		} finally {
@@ -187,8 +188,29 @@ public class DeckOperations {
 		}
 	}
 	
+	public static void addNewCardToDeck(Deck deck) {
+		SQLiteHandler sqlite;
+		try {
+			sqlite = new SQLiteHandler(Config.DATABASE);
+		} catch (SQLiteException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		try {
+			sqlite.insert(Config.CARD_TABLE, "DeckID,Weight", deck.getID() + "," + ((Config.MAX_WEIGHT + Config.MIN_WEIGHT) / 2));
+			int cardID = (int)sqlite.getLastInsertId();
+			Flashcard card = new Flashcard(cardID);
+			card.markDirty();
+		} catch (SQLiteException e) {
+			e.printStackTrace();
+		} finally {
+			sqlite.close();
+		}
+	}
+	
 	/**
-	 * Adds a new card to the specified deck
+	 * Adds an existing card to the specified deck
 	 * 
 	 * @param deck The deck to add the card to
 	 * @param card The card to add
@@ -203,7 +225,7 @@ public class DeckOperations {
 		}
 		
 		try {
-			sqlite.insert(Config.CARD_TABLE, "DeckID,Weight", card.getID() + "," + card.getWeight());
+			sqlite.insert(Config.CARD_TABLE, "DeckID,Weight", deck.getID() + "," + card.getWeight());
 			card.markDirty();
 			deck.addCard(card);
 			

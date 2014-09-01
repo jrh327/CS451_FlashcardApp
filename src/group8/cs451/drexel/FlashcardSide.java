@@ -15,8 +15,6 @@ package group8.cs451.drexel;
 public class FlashcardSide {
 	private int id;
 	private int weight;
-	private final int MIN_WEIGHT = 0;
-	private final int MAX_WEIGHT = 100;
 	private String text;
 	private String label;
 	private boolean isDirty = false;
@@ -25,14 +23,14 @@ public class FlashcardSide {
 	
 	public FlashcardSide(int id) {
 		this.id = id;
-		this.weight = (MAX_WEIGHT + MIN_WEIGHT) / 2;
+		this.weight = (Config.MAX_WEIGHT + Config.MIN_WEIGHT) / 2;
 		this.text = "";
 		this.label = "";
 	}
 	
 	public FlashcardSide(int id, String label, String text) {
 		this.id = id;
-		this.weight = (MAX_WEIGHT + MIN_WEIGHT) / 2;
+		this.weight = (Config.MAX_WEIGHT + Config.MIN_WEIGHT) / 2;
 		this.text = text;
 		this.label = label;
 	}
@@ -83,11 +81,15 @@ public class FlashcardSide {
 		this.isDirty = true;
 	}
 	
+	public void markClean() {
+		this.isDirty = false;
+	}
+	
 	private int boundWeight(int w) {
-		if (w < MIN_WEIGHT) {
-			return MIN_WEIGHT;
-		} else if (w > MAX_WEIGHT) {
-			return MAX_WEIGHT;
+		if (w < Config.MIN_WEIGHT) {
+			return Config.MIN_WEIGHT;
+		} else if (w > Config.MAX_WEIGHT) {
+			return Config.MAX_WEIGHT;
 		} else {
 			return w;
 		}

@@ -78,6 +78,10 @@ public class Deck {
 		this.isDirty = true;
 	}
 	
+	public void markClean() {
+		this.isDirty = false;
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof Deck)) {
