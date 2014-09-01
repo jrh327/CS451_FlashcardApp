@@ -1,0 +1,30 @@
+<project name="FlipIt" basedir="." default="main">
+
+	<property name="src" value="src" />
+	<property name="bin" value="bin" />
+	<property name="lib" value="lib" />
+	<property name="main.Class" value="group8.cs451.drexel.Main" />
+
+	<path id="classpath">
+		<fileset dir="${lib}" includes="**/*.jar" />
+	</path>
+
+	<target name="clean">
+		<delete dir="${bin}" />
+	</target>
+
+	<target name="build">
+		<mkdir dir="${bin}" />
+		<javac srcdir="${src}" destdir="${bin}" classpathref="classpath" />
+	</target>
+
+	<target name="run">
+		<java fork="true" classname="${main.Class}">
+			<classpath>
+				<path refid="classpath" />
+				<path location="${bin}" />
+			</classpath>
+		</java>
+	</target>
+
+</project>
