@@ -1,3 +1,15 @@
+/**
+ * DeckOperations.java: contains common methods for working with decks of flashcards
+ * 
+ * This file is part of FlashcardApp
+ * 
+ * Contributors:
+ * Jon Hopkins
+ * Jesse Kuehn
+ * Rishir Patel
+ * Sanjana Raj
+ */
+
 package group8.cs451.drexel;
 
 import java.util.ArrayList;
@@ -136,7 +148,7 @@ public class DeckOperations {
 		
 		try {
 			sqlite.insert(Config.DECK_TABLE, "Name", deckName);
-			int id = Integer.parseInt(sqlite.selectSingle("SELECT MAX(ID) FROM " + Config.DECK_TABLE, ""));
+			int id = (int)sqlite.getLastInsertId();
 			Deck deck = new Deck(id, deckName);
 			deck.markDirty();
 			decks.add(deck);
