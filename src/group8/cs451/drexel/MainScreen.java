@@ -81,7 +81,7 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 			public void actionPerformed(ActionEvent event) {
 				Component source = (Component)event.getSource();
 				String response = JOptionPane.showInputDialog(source, "Enter name of new deck:", "Add a new deck", JOptionPane.QUESTION_MESSAGE);
-				if (!response.isEmpty()) {
+				if (null != response && !response.isEmpty()) {
 					DeckOperations.addDeck(decks, response);
 					JPanel pDecks = setupDecksTree();
 					add(new JScrollPane(pDecks), BorderLayout.WEST);
