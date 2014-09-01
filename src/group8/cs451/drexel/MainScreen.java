@@ -41,8 +41,6 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 	private CardView cardView;
 	private Vector<Deck> decks;
 	
-	private final MainScreen self = this;
-	
 	public MainScreen() {
 		decks = DeckOperations.loadDecks();
 		
@@ -84,8 +82,12 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 				if (null != response && !response.isEmpty()) {
 					DeckOperations.addDeck(decks, response);
 					JPanel pDecks = setupDecksTree();
+					
+					BorderLayout layout = (BorderLayout)getLayout();
+					remove(layout.getLayoutComponent(BorderLayout.WEST));
+					
 					add(new JScrollPane(pDecks), BorderLayout.WEST);
-					revalidate();
+					validate();
 				}
 			}
 		});
@@ -124,8 +126,12 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 				if(dialogResult == JOptionPane.YES_OPTION){
 					DeckOperations.removeDeck(decks, deck);
 					JPanel pDecks = setupDecksTree();
+
+					BorderLayout layout = (BorderLayout)getLayout();
+					remove(layout.getLayoutComponent(BorderLayout.WEST));
+					
 					add(new JScrollPane(pDecks), BorderLayout.WEST);
-					revalidate();
+					validate();
 				}
 			}
 		});
