@@ -248,7 +248,7 @@ public class SQLiteHandler {
 	 */
 	public boolean update(String table, String columns, String values, String where, String args) throws SQLiteException {
 		String[] cols = columns.split(_delimiter);
-		String[] vals = values.split(_delimiter);
+		String[] vals = values.split(_delimiter, -1); // allow empty strings
 		String[] parameters = args.split(_delimiter);
 		
 		if (cols.length == 0 || vals.length == 0) {
@@ -402,7 +402,7 @@ public class SQLiteHandler {
 	 * @throws SQLiteException
 	 */
 	public boolean insert(String tableName, String columns, String values) throws SQLiteException {
-		String[] parameters = values.split(_delimiter);
+		String[] parameters = values.split(_delimiter, -1); // allow empty strings
 		boolean success = true;
 		
 		if (parameters.length == 0) {
@@ -419,7 +419,7 @@ public class SQLiteHandler {
 		
 		try {
 			for (int i = 0; i < parameters.length; i++) {
-				st.bind(i + 1, parameters[i]);
+				st.bind(i + 1, String.valueOf(parameters[i]));
 			}
 			st.step();
 		} catch (SQLiteException e) {

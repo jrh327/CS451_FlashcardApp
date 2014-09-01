@@ -101,6 +101,6 @@ public class FlashcardSide {
 			return false;
 		}
 		FlashcardSide fs = (FlashcardSide)o;
-		return (this.weight == fs.weight && this.label.equals(fs.label) && this.text.equals(fs.text));
+		return (this.id == fs.id && this.weight == fs.weight && this.label.equals(fs.label) && this.text.equals(fs.text));
 	}
 }

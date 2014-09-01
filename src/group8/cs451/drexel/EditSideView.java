@@ -24,6 +24,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
+import com.almworks.sqlite4java.SQLiteException;
+
 public class EditSideView extends JPanel {
 	private FlashcardSide side;
 	
@@ -58,6 +60,21 @@ public class EditSideView extends JPanel {
 				if (refresh) {
 					// force the view to update
 					sideView.refresh();
+					
+					SQLiteHandler sqlite;
+					try {
+						sqlite = new SQLiteHandler(Config.DATABASE);
+					} catch (SQLiteException e) {
+						e.printStackTrace();
+						return;
+					}
+					
+					try {
+						sqlite.update(Config.SIDE_TABLE, "Label,Text", s.getLabel() + "," + s.getText(), "ID = ?", String.valueOf(s.getID()));
+						s.markClean();
+					} catch (SQLiteException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		});
@@ -67,5 +84,9 @@ public class EditSideView extends JPanel {
 		info.add(text, BorderLayout.CENTER);
 		
 		add(info, BorderLayout.CENTER);
+	}
+	
+	public FlashcardSide getSide() {
+		return side;
 	}
 }

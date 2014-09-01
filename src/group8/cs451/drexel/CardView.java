@@ -19,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 public class CardView extends JPanel {
+	private FlashcardSide side = null;
+	
 	public CardView() {
 		setLayout(new BorderLayout());
 	}
@@ -36,9 +38,23 @@ public class CardView extends JPanel {
 			JLabel msg = new JLabel("Click a side of the card to view it");
 			msg.setHorizontalAlignment(SwingConstants.CENTER);
 			add(msg, BorderLayout.CENTER);
+			this.side = null;
 			return;
 		}
 		
+		BorderLayout layout = (BorderLayout)getLayout();
+		remove(layout.getLayoutComponent(BorderLayout.CENTER));
+		
 		add(side, BorderLayout.CENTER);
+		if (side instanceof SideView) {
+			this.side = ((SideView)side).getSide();
+		} else if (side instanceof EditSideView) {
+			this.side = ((EditSideView)side).getSide();
+		}
+		validate();
+	}
+	
+	public FlashcardSide getSide() {
+		return side;
 	}
 }

@@ -38,6 +38,7 @@ import com.almworks.sqlite4java.SQLiteException;
 
 public class MainScreen extends JPanel implements TreeSelectionListener {
 	private JPanel sidesList;
+	private Flashcard selectedCard;
 	private CardView cardView;
 	private Vector<Deck> decks;
 	
@@ -50,7 +51,7 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 		
 		
 		sidesList = new JPanel();
-		sidesList.setLayout(new BoxLayout(sidesList, BoxLayout.Y_AXIS));
+		sidesList.setLayout(new BorderLayout());
 		
 		JPanel pDecks = setupDecksTree();
 		
@@ -170,16 +171,30 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 			return;
 		}
 		
+		JPanel pSides = new JPanel();
+		pSides.setLayout(new BoxLayout(pSides, BoxLayout.Y_AXIS));
+		
 		JLabel listLabel = new JLabel("Sides");
 		listLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		sidesList.add(listLabel);
+		pSides.add(listLabel);
 		
 		int numSides = sides.size();
 		for (int i = 0; i < numSides; i++) {
 			SideView sideView = new SideView(this, sides.get(i));
 			sideView.listenForMouseClicks(true);
-			sidesList.add(sideView);
+			pSides.add(sideView);
 		}
+		
+		JPanel buttons = new JPanel();
+		buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
+		JButton addSide = addSideButton();
+		JButton removeSide = removeSideButton(cardView);
+		
+		buttons.add(addSide);
+		buttons.add(removeSide);
+		
+		pSides.add(buttons);
+		sidesList.add(pSides);
 		
 		revalidate();
 	}
@@ -347,6 +362,48 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 		return removeCard;
 	}
 	
+	private JButton addSideButton() {
+		JButton addSide = new JButton("Add");
+		addSide.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				Component source = (Component)event.getSource();
+				
+				if (null == selectedCard) {
+					return;
+				}
+				
+				int dialogResult = JOptionPane.showConfirmDialog (source, "Add a side to this card?", "Add side", JOptionPane.YES_NO_OPTION);
+				if (dialogResult == JOptionPane.YES_OPTION){
+					DeckOperations.addNewSideToCard(selectedCard);
+					createSidesList(selectedCard.getSides());
+				}
+			}
+		});
+		
+		return addSide;
+	}
+	
+	private JButton removeSideButton(final CardView view) {
+		JButton removeSide = new JButton("Remove");
+		removeSide.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				Component source = (Component)event.getSource();
+				
+				if (null == selectedCard || null == view.getSide()) {
+					return;
+				}
+				
+				int dialogResult = JOptionPane.showConfirmDialog (source, "Remove the displayed side?", "Remove side", JOptionPane.YES_NO_OPTION);
+				if (dialogResult == JOptionPane.YES_OPTION){
+					DeckOperations.removeSideFromCard(selectedCard, view.getSide());
+					createSidesList(selectedCard.getSides());
+				}
+			}
+		});
+		
+		return removeSide;
+	}
+	
 	@Override
 	public void valueChanged(TreeSelectionEvent event) {
 		JTree source = (JTree)event.getSource();
@@ -361,6 +418,7 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 		if (node.isLeaf()) {
 			if (nodeInfo instanceof Flashcard) {
 				Flashcard card = (Flashcard)nodeInfo;
+				selectedCard = card;
 				if (null == card.getSides()) {
 					SQLiteHandler sqlite;
 					try {
@@ -388,6 +446,8 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 				
 				createSidesList(card.getSides());
 			}
+		} else {
+			selectedCard = null;
 		}
 	}
 }

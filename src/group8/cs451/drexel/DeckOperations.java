@@ -188,6 +188,11 @@ public class DeckOperations {
 		}
 	}
 	
+	/**
+	 * Adds a new card to the specified deck
+	 * 
+	 * @param deck The deck to add the card to
+	 */
 	public static void addNewCardToDeck(Deck deck) {
 		SQLiteHandler sqlite;
 		try {
@@ -198,7 +203,7 @@ public class DeckOperations {
 		}
 		
 		try {
-			sqlite.insert(Config.CARD_TABLE, "DeckID,Weight", deck.getID() + "," + ((Config.MAX_WEIGHT + Config.MIN_WEIGHT) / 2));
+			sqlite.insert(Config.CARD_TABLE, "DeckID", String.valueOf(deck.getID()));
 			int cardID = (int)sqlite.getLastInsertId();
 			Flashcard card = new Flashcard(cardID);
 			card.markDirty();
@@ -275,6 +280,33 @@ public class DeckOperations {
 	
 	/**
 	 * Adds a new side to the specified card
+	 * 
+	 * @param card The card to add the side to
+	 */
+	public static void addNewSideToCard(Flashcard card) {
+		SQLiteHandler sqlite;
+		try {
+			sqlite = new SQLiteHandler(Config.DATABASE);
+		} catch (SQLiteException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		try {
+			sqlite.insert(Config.SIDE_TABLE, "CardID,Text,Label", card.getID() + ",,");
+			int sideID = (int)sqlite.getLastInsertId();
+			FlashcardSide side = new FlashcardSide(sideID);
+			side.markDirty();
+			card.addSide(side);
+		} catch (SQLiteException e) {
+			e.printStackTrace();
+		} finally {
+			sqlite.close();
+		}
+	}
+	
+	/**
+	 * Adds an existing side to the specified card
 	 * 
 	 * @param card The card to add the side to
 	 * @param side The side to be added
