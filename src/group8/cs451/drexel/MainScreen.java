@@ -70,13 +70,13 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Decks");
 		createDecksNodes(top);
 		
-		JTree decksTree = new JTree(top);
+		final JTree decksTree = new JTree(top);
 		decksTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		
 		//Listen for when the selection changes.
 		decksTree.addTreeSelectionListener(this);
 		JPanel pDecks = new JPanel();
-		JButton addDeck = new JButton("Add Deck");
+		JButton addDeck = new JButton("Add");
 		addDeck.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				Component source = (Component)event.getSource();
@@ -89,10 +89,55 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 				}
 			}
 		});
+		JButton removeDeck = new JButton("Remove");
+		removeDeck.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				Component source = (Component)event.getSource();
+				Deck deck;
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode)decksTree.getLastSelectedPathComponent();
+				
+				// Nothing is selected
+				if (node == null) {
+					return;
+				}
+				
+				Object nodeInfo = node.getUserObject();
+				if (nodeInfo instanceof Deck) {
+					deck = (Deck)nodeInfo;
+				} else if (node.isLeaf()) {
+					if (nodeInfo instanceof Flashcard) {
+						node = (DefaultMutableTreeNode)node.getParent();
+						nodeInfo = node.getUserObject();
+						if (nodeInfo instanceof Deck) {
+							deck = (Deck)nodeInfo;
+						} else {
+							return;
+						}
+					} else {
+						return;
+					}
+				} else {
+					return;
+				}
+				
+				int dialogResult = JOptionPane.showConfirmDialog (source, "Remove deck " + deck.getName() + "?", "Remove deck", JOptionPane.YES_NO_OPTION);
+				if(dialogResult == JOptionPane.YES_OPTION){
+					DeckOperations.removeDeck(decks, deck);
+					JPanel pDecks = setupDecksTree();
+					add(new JScrollPane(pDecks), BorderLayout.WEST);
+					revalidate();
+				}
+			}
+		});
+		
+		JPanel deckButtons = new JPanel();
+		deckButtons.setLayout(new BoxLayout(deckButtons, BoxLayout.X_AXIS));
+		deckButtons.add(addDeck);
+		deckButtons.add(removeDeck);
 		
 		pDecks.setLayout(new BorderLayout());
 		pDecks.add(decksTree, BorderLayout.CENTER);
-		pDecks.add(addDeck, BorderLayout.SOUTH);
+		pDecks.add(deckButtons, BorderLayout.SOUTH);
 		
 		return pDecks;
 	}
