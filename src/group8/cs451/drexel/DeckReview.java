@@ -23,6 +23,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 public class DeckReview extends JPanel {
 	private Deck deck;
@@ -63,6 +64,7 @@ public class DeckReview extends JPanel {
 		cardView.setSide(new SideView(cardView, displayedSide));
 		
 		JLabel question = new JLabel("What is the " + guessedSide.getLabel() + "?");
+		question.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		BorderLayout layout = (BorderLayout)getLayout();
 		Component c = layout.getLayoutComponent(BorderLayout.SOUTH);
@@ -78,8 +80,8 @@ public class DeckReview extends JPanel {
 			remove(c);
 		}
 		
-		add(question, BorderLayout.SOUTH);
 		add(buttonsPanel, BorderLayout.EAST);
+		add(question, BorderLayout.SOUTH);
 		add(cardView, BorderLayout.CENTER);
 	}
 	
