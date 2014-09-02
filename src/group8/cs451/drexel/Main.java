@@ -73,6 +73,55 @@ public class Main {
 		} finally {
 			sqlite.close();
 		}
+		
+		DictionaryIO dicOut = new DictionaryIO();
+		Config.dictionary = dicOut.loadDictionary();
+		/*try {
+			sqlite = new SQLiteHandler(Config.DATABASE);
+		} catch (SQLiteException e) {
+			e.printStackTrace();
+			return;
+		}
+		String alldefinition = "";
+		int maxdefinitionlength = 0;
+		int maxtypelength = 0;
+		int maxwordlength = 0;
+		System.out.println("Initializing dictionary table in database..");
+		for( Map.Entry<String, HashMap<String, ArrayList<String>>> word : ((dictionary).getDictionary()).entrySet() )
+		{
+			for(Map.Entry<String, ArrayList<String>> type : word.getValue().entrySet())
+			{
+				alldefinition = "";
+				for(String definition : type.getValue())
+				{
+					alldefinition += definition;
+				}
+				String toInsert = word.getKey() + "," + type.getKey() + "," + alldefinition;
+				if (toInsert.length() > maxdefinitionlength)
+				{
+					maxdefinitionlength = toInsert.length();
+				}
+				if (type.getKey().length() > maxtypelength)
+				{
+					maxtypelength = type.getKey().length();
+				}
+				try {
+					sqlite.insert(Config.DICTIONARY_TABLE, "Word,Type,Definition", toInsert);
+				} catch (SQLiteException e) {
+					e.printStackTrace();
+				} finally {
+					sqlite.close();
+				}				
+			}
+			if (word.getKey().length() > maxwordlength)
+			{
+				maxwordlength = word.getKey().length();
+			}
+		}
+		System.out.println("Dictionary initialized!");
+		System.out.println("Max definition length " + maxdefinitionlength);
+		System.out.println("Max type length " + maxtypelength);
+		System.out.println("Max word length " + maxwordlength);*/
 	}
 	
 	public Main() {
