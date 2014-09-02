@@ -138,4 +138,17 @@ public class Flashcard {
 	public String toString() {
 		return this.toString;
 	}
+
+	public void updateWeight() {
+		// get the weight of the heaviest side
+		int max = 0;
+		for (FlashcardSide s : this.sides) {
+			if (s.getWeight() > max)
+				max = s.getWeight();
+		}
+
+		// Weight for card is the weight of the heaviest side
+		this.setWeight(max);
+	}
+
 }
