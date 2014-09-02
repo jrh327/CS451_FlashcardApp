@@ -49,6 +49,8 @@ public class DeckReview extends JPanel {
 	}
 	
 	private void setupDeckReview() {
+		DeckOperations.saveDeck(deck);
+		
 		buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new BorderLayout());
 		
@@ -90,15 +92,15 @@ public class DeckReview extends JPanel {
 		if (null == cards || cards.size() == 0) {
 			return null;
 		}
-
+		
 		// get selection threshold
 		Random rand = new Random();
 		double threshold = rand.nextDouble();
-
+		
 		// Shuffle deck without modifying original
-		Vector<Flashcard> dup = new Vector(cards);
+		Vector<Flashcard> dup = new Vector<Flashcard>(cards);
 		Collections.shuffle(dup);
-
+		
 		// Select first card in our shuffled deck that passes the threshold
 		Flashcard ret = null;
 		for (int i = 0; i < dup.size() && ret == null; i++) {
@@ -110,7 +112,7 @@ public class DeckReview extends JPanel {
 			if (dup.get(i).getWeight() >= threshold || i == dup.size()-1)
 				ret = dup.get(i);
 		}
-
+		
 		return ret;
 	}
 	
