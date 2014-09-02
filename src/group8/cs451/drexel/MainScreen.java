@@ -509,28 +509,7 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 				Flashcard card = (Flashcard)nodeInfo;
 				selectedCard = card;
 				if (null == card.getSides()) {
-					SQLiteHandler sqlite;
-					try {
-						sqlite = new SQLiteHandler(Config.DATABASE);
-					} catch (SQLiteException e) {
-						e.printStackTrace();
-						return;
-					}
-					
-					try {
-						ArrayList<ArrayList<String>> rows = sqlite.select(Config.SIDE_TABLE, "ID,Label,Text,Weight", "CardID = ?", String.valueOf(card.getID()));
-						int numSides = rows.size();
-						Vector<FlashcardSide> sides = new Vector<FlashcardSide>();
-						for (int i = 0; i < numSides; i++) {
-							ArrayList<String> row = rows.get(i);
-							sides.add(new FlashcardSide(Integer.parseInt(row.get(0)), row.get(1), row.get(2), Integer.parseInt(row.get(3))));
-						}
-						card.setSides(sides);
-					} catch (SQLiteException e) {
-						e.printStackTrace();
-					} finally {
-						sqlite.close();
-					}
+					DeckOperations.loadCard(card);
 				}
 				
 				createSidesList(card.getSides());

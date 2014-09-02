@@ -28,6 +28,13 @@ public class DeckReview extends JPanel {
 	public DeckReview(Deck deck) {
 		this.deck = deck;
 		
+		DeckOperations.loadDeck(deck);
+		Vector<Flashcard> cards = deck.getCards();
+		int numCards = cards.size();
+		for (int i = 0; i < numCards; i++) {
+			DeckOperations.loadCard(cards.get(i));
+		}
+		
 		setLayout(new BorderLayout());
 		
 		buttonsPanel = new JPanel();
@@ -50,6 +57,7 @@ public class DeckReview extends JPanel {
 	
 	private Flashcard getWeightedCard(Vector<Flashcard> cards) {
 		if (null == cards || cards.size() == 0) {
+			System.out.println("no cards");
 			return null;
 		}
 		
@@ -59,6 +67,7 @@ public class DeckReview extends JPanel {
 	
 	private FlashcardSide getWeightedSide(Vector<FlashcardSide> sides) {
 		if (null == sides || sides.size() == 0) {
+			System.out.println("no sides");
 			return null;
 		}
 		

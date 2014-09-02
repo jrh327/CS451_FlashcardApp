@@ -13,6 +13,7 @@
 package group8.cs451.drexel;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -43,7 +44,10 @@ public class CardView extends JPanel {
 		}
 		
 		BorderLayout layout = (BorderLayout)getLayout();
-		remove(layout.getLayoutComponent(BorderLayout.CENTER));
+		Component c = layout.getLayoutComponent(BorderLayout.CENTER);
+		if (null != c) {
+			remove(c);
+		}
 		
 		add(side, BorderLayout.CENTER);
 		if (side instanceof SideView) {

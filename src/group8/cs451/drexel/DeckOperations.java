@@ -72,7 +72,7 @@ public class DeckOperations {
 		try {
 			String deckName = deck.getName();
 			ArrayList<ArrayList<String>> arr = sqlite.select(Config.CARD_TABLE, "ID,Weight",
-						"DeckID = (SELECT ID FROM " + Config.DECK_TABLE + " WHERE Name = ?", deckName);
+						"DeckID = (SELECT ID FROM " + Config.DECK_TABLE + " WHERE Name = ?)", deckName);
 			
 			for (int i = 0; i < arr.size(); i++) {
 				ArrayList<String> row = arr.get(i);
@@ -81,6 +81,36 @@ public class DeckOperations {
 				
 				deck.addCard(card);
 			}
+		} catch (SQLiteException e) {
+			e.printStackTrace();
+		} finally {
+			sqlite.close();
+		}
+	}
+	
+	/**
+	 * Loads the sides of the given card
+	 * 
+	 * @param card The card to load
+	 */
+	public static void loadCard(Flashcard card) {
+		SQLiteHandler sqlite;
+		try {
+			sqlite = new SQLiteHandler(Config.DATABASE);
+		} catch (SQLiteException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		try {
+			ArrayList<ArrayList<String>> rows = sqlite.select(Config.SIDE_TABLE, "ID,Label,Text,Weight", "CardID = ?", String.valueOf(card.getID()));
+			int numSides = rows.size();
+			Vector<FlashcardSide> sides = new Vector<FlashcardSide>();
+			for (int i = 0; i < numSides; i++) {
+				ArrayList<String> row = rows.get(i);
+				sides.add(new FlashcardSide(Integer.parseInt(row.get(0)), row.get(1), row.get(2), Integer.parseInt(row.get(3))));
+			}
+			card.setSides(sides);
 		} catch (SQLiteException e) {
 			e.printStackTrace();
 		} finally {
