@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 public class DictionaryIO {
 	private String filename = "flashcard_dictionary.ser";
 	
-	public void saveDictionary(MyDictionary dictionary) {
+	public void saveDictionary(FlashDictionary dictionary) {
 		
 		File file = new File(filename);
 		FileOutputStream fileOut;
@@ -55,14 +55,14 @@ public class DictionaryIO {
 		}
 	}
 	
-	public MyDictionary loadDictionary() {
-		MyDictionary inDict = null;
+	public FlashDictionary loadDictionary() {
+		FlashDictionary inDict = null;
 		
 		try {
 			try (FileInputStream fileIn = new FileInputStream(filename)) {
 				System.out.println("attempting to load dictionary...");
 				try (ObjectInputStream in = new ObjectInputStream(fileIn)) {
-					inDict = (MyDictionary)in.readObject();
+					inDict = (FlashDictionary)in.readObject();
 					System.out.println("Dictionary successfully loaded!");
 				}
 			}

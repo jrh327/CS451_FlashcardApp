@@ -111,7 +111,8 @@ public class Main {
 					e.printStackTrace();
 				} finally {
 					sqlite.close();
-				}				
+				}		
+					
 			}
 			if (word.getKey().length() > maxwordlength)
 			{

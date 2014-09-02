@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  */
 public class DictionaryMain {
 	public static void main(String[] args) throws IOException {
-		MyDictionary dictionary = new MyDictionary();
+		FlashDictionary dictionary = new FlashDictionary();
 		ArrayList<String> def;
 		HashMap<String, ArrayList<String>> mydefinition;
 		/*
@@ -82,7 +82,7 @@ public class DictionaryMain {
             importDictionary
             Imports the specified dictionary into MyDictionary class object
 	 */
-	public static void importDictionary(MyDictionary dictionary) throws IOException {
+	public static void importDictionary(FlashDictionary dictionary) throws IOException {
 		File dictFile = new File("gutenbergDictionary.txt");
 		BufferedReader in = null;
 		try {

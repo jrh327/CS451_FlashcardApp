@@ -17,6 +17,7 @@ public class Config {
 	public static final String DECK_TABLE = "Decks";
 	public static final String CARD_TABLE = "Cards";
 	public static final String SIDE_TABLE = "Sides";
+	public static FlashDictionary dictionary = new FlashDictionary();
 	public static final int MIN_WEIGHT = 0;
 	public static final int MAX_WEIGHT = 100;
 }
