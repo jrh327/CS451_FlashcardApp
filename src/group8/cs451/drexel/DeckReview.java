@@ -137,7 +137,9 @@ public class DeckReview extends JPanel {
 			// The threshold is a minimum difficulty to select
 			// If we're at the end of the deck and no card has passed the test, select the last card
 			// The last card then effectively becomes a random draw
-			if (dup.get(i).getWeight() >= threshold || i == dup.size()-1) {
+			if (dup.get(i).getWeight() >= threshold) {
+				side = dup.get(i);
+			} else if (i == dup.size()-1) {
 				side = dup.get(i);
 				if (side == displayedSide)
 					side = dup.get(i-1);
