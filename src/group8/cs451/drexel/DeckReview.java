@@ -96,7 +96,7 @@ public class DeckReview extends JPanel {
 		
 		// get selection threshold
 		Random rand = new Random();
-		double threshold = rand.nextDouble();
+		int threshold = rand.nextInt(Config.MAX_WEIGHT + 1);
 		
 		// Shuffle deck without modifying original
 		Vector<Flashcard> dup = new Vector<Flashcard>(cards);
@@ -127,12 +127,24 @@ public class DeckReview extends JPanel {
 		
 		FlashcardSide side = displayedSide;
 		Random rand = new Random();
-		
-		// keep trying until we get a side that isn't the side being displayed
-		while (side == displayedSide) {
-			// TODO: return a random side based on weights
-			int randomNum = rand.nextInt(sides.size());
-			side = sides.get(randomNum);
+		int threshold = rand.nextInt(Config.MAX_WEIGHT + 1);
+
+		Vector<FlashcardSide> dup = new Vector<FlashcardSide>(sides);
+		Collections.shuffle(dup);
+
+		for (int i = 0; i < dup.size() && side == displayedSide; i++) {
+			// Cards with high weights are difficult
+			// Cards with low weights are easy
+			// The threshold is a minimum difficulty to select
+			// If we're at the end of the deck and no card has passed the test, select the last card
+			// The last card then effectively becomes a random draw
+			if (dup.get(i).getWeight() >= threshold) {
+				side = dup.get(i);
+			} else if (i == dup.size()-1) {
+				side = dup.get(i);
+				if (side == displayedSide)
+					side = dup.get(i-1);
+			}
 		}
 		
 		return side;
@@ -180,8 +192,8 @@ public class DeckReview extends JPanel {
 		correctButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				// decrement weight for selected card
-				System.out.println("[" + guessedSide.getLabel() + "]" + " " + guessedSide.getWeight() + " -> " + (guessedSide.getWeight() - 1));
-				guessedSide.setWeight(guessedSide.getWeight() - 1);
+				System.out.println("[" + guessedSide.getLabel() + "]" + " " + guessedSide.getWeight() + " -> " + (guessedSide.getWeight() - 10));
+				guessedSide.setWeight(guessedSide.getWeight() - 10);
 
 				displayedCard.updateWeight();
 				
@@ -198,8 +210,8 @@ public class DeckReview extends JPanel {
 		incorrectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				// increment weight for selected card
-				System.out.println("[" + guessedSide.getLabel() + "]" + " " + guessedSide.getWeight() + " -> " + (guessedSide.getWeight() + 1));
-				guessedSide.setWeight(guessedSide.getWeight() + 1);
+				System.out.println("[" + guessedSide.getLabel() + "]" + " " + guessedSide.getWeight() + " -> " + (guessedSide.getWeight() + 10));
+				guessedSide.setWeight(guessedSide.getWeight() + 10);
 
 				displayedCard.updateWeight();
 				
