@@ -95,7 +95,7 @@ public class DeckReview extends JPanel {
 		
 		// get selection threshold
 		Random rand = new Random();
-		int threshold = rand.nextInt(101);
+		int threshold = rand.nextInt(Config.MAX_WEIGHT + 1);
 		
 		// Shuffle deck without modifying original
 		Vector<Flashcard> dup = new Vector<Flashcard>(cards);
@@ -126,7 +126,7 @@ public class DeckReview extends JPanel {
 		
 		FlashcardSide side = displayedSide;
 		Random rand = new Random();
-		int threshold = rand.nextInt(101);
+		int threshold = rand.nextInt(Config.MAX_WEIGHT + 1);
 
 		Vector<FlashcardSide> dup = new Vector<FlashcardSide>(sides);
 		Collections.shuffle(dup);
@@ -139,7 +139,7 @@ public class DeckReview extends JPanel {
 			// The last card then effectively becomes a random draw
 			if (dup.get(i).getWeight() >= threshold || i == dup.size()-1) {
 				side = dup.get(i);
-				if (side == displayedside)
+				if (side == displayedSide)
 					side = dup.get(i-1);
 			}
 		}
