@@ -68,6 +68,9 @@ public class Main {
 			sqlite.createTable(Config.DECK_TABLE, "ID,Name", "INTEGER PRIMARY KEY ASC,CHAR(50) UNIQUE");
 			sqlite.createTable(Config.CARD_TABLE, "ID,DeckID,Weight", "INTEGER PRIMARY KEY ASC,INTEGER,INTEGER DEFAULT 0");
 			sqlite.createTable(Config.SIDE_TABLE, "ID,CardID,Label,Text,Weight", "INTEGER PRIMARY KEY ASC,INTEGER,TEXT DEFAULT '',TEXT DEFAULT '',INTEGER DEFAULT 0");
+			if (sqlite.select(Config.DECK_TABLE, "Name", "Name = ?", "Dictionary").isEmpty()) {
+				sqlite.insert(Config.DECK_TABLE, "Name", "Dictionary");
+			}
 		} catch (SQLiteException e) {
 			e.printStackTrace();
 		} finally {
