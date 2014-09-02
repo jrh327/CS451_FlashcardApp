@@ -16,6 +16,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Vector;
@@ -33,7 +34,7 @@ public class DeckReview extends JPanel {
 	private FlashcardSide guessedSide;
 	private JPanel buttonsPanel;
 	
-	public DeckReview(Deck deck) {
+	public DeckReview(Deck deck) throws NumberFormatException, UnsupportedEncodingException {
 		this.deck = deck;
 		
 		DeckOperations.loadDeck(deck);

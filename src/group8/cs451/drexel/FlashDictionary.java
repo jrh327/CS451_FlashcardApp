@@ -102,4 +102,8 @@ public class FlashDictionary implements Serializable{
 	public int getSize() {
 		return dictionary.size();
 	}
+	
+	public HashMap<String, HashMap<String, ArrayList<String>>> getDictionary() {
+		return dictionary;
+	}
 }

@@ -16,6 +16,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -31,6 +32,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
+
+
 
 
 
@@ -432,7 +435,12 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 				JButton editDeck = editDeckButton();
 				
 				add(editDeck, BorderLayout.WEST);
-				add(new DeckReview(deck), BorderLayout.CENTER);
+				try {
+					add(new DeckReview(deck), BorderLayout.CENTER);
+				} catch (NumberFormatException | UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				validate();
 			}
 		});
@@ -509,7 +517,13 @@ public class MainScreen extends JPanel implements TreeSelectionListener {
 				Flashcard card = (Flashcard)nodeInfo;
 				selectedCard = card;
 				if (null == card.getSides()) {
-					DeckOperations.loadCard(card);
+					try {
+						DeckOperations.loadCard(card);
+					} catch (NumberFormatException
+							| UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				
 				createSidesList(card.getSides());

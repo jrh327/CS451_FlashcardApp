@@ -12,6 +12,8 @@
 
 package group8.cs451.drexel;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -93,8 +95,10 @@ public class DeckOperations {
 	 * Loads the sides of the given card
 	 * 
 	 * @param card The card to load
+	 * @throws UnsupportedEncodingException 
+	 * @throws NumberFormatException 
 	 */
-	public static void loadCard(Flashcard card) {
+	public static void loadCard(Flashcard card) throws NumberFormatException, UnsupportedEncodingException {
 		SQLiteHandler sqlite;
 		try {
 			sqlite = new SQLiteHandler(Config.DATABASE);
@@ -109,7 +113,7 @@ public class DeckOperations {
 			Vector<FlashcardSide> sides = new Vector<FlashcardSide>();
 			for (int i = 0; i < numSides; i++) {
 				ArrayList<String> row = rows.get(i);
-				sides.add(new FlashcardSide(Integer.parseInt(row.get(0)), row.get(1), row.get(2), Integer.parseInt(row.get(3))));
+				sides.add(new FlashcardSide(Integer.parseInt(row.get(0)), row.get(1), URLDecoder.decode(row.get(2), "UTF-8"), Integer.parseInt(row.get(3))));
 			}
 			card.setSides(sides);
 		} catch (SQLiteException e) {

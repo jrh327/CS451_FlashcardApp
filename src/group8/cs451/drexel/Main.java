@@ -13,7 +13,11 @@
 package group8.cs451.drexel;
 
 import java.awt.Dimension;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -69,16 +73,55 @@ public class Main {
 			sqlite.createTable(Config.CARD_TABLE, "ID,DeckID,Weight", "INTEGER PRIMARY KEY ASC,INTEGER,INTEGER DEFAULT 0");
 			sqlite.createTable(Config.SIDE_TABLE, "ID,CardID,Label,Text,Weight", "INTEGER PRIMARY KEY ASC,INTEGER,TEXT DEFAULT '',TEXT DEFAULT '',INTEGER DEFAULT 0");
 			if (sqlite.select(Config.DECK_TABLE, "Name", "Name = ?", "Dictionary").isEmpty()) {
+
 				sqlite.insert(Config.DECK_TABLE, "Name", "Dictionary");
+				long id = sqlite.getLastInsertId();
+				String deckid = String.valueOf(id);
+				/*sqlite.insert(Config.CARD_TABLE, "DeckID,Weight", deckid + ",50");
+				String cardid = String.valueOf(sqlite.getLastInsertId());
+				sqlite.insert(Config.SIDE_TABLE, "CardID,Label,Text,Weight", cardid + ",,Word,50");
+				sqlite.insert(Config.SIDE_TABLE, "CardID,Label,Text,Weight", cardid + ",,Definition,50");*/
+				DictionaryIO dicOut = new DictionaryIO();
+				Config.dictionary = dicOut.loadDictionary();
+				int count = 0;
+				for( Map.Entry<String, HashMap<String, ArrayList<String>>> word : ((Config.dictionary).getDictionary()).entrySet() )
+				{
+					count++;
+					sqlite.insert(Config.CARD_TABLE, "DeckID,Weight", deckid + ",50");
+					String cardid = String.valueOf(sqlite.getLastInsertId());
+					for(Map.Entry<String, ArrayList<String>> type : word.getValue().entrySet())
+					{
+						String encodedkey = "";
+						
+						try {
+							encodedkey = URLEncoder.encode(type.getKey(), "UTF-8");
+						} catch (UnsupportedEncodingException e) {
+							e.printStackTrace();
+						}
+						sqlite.insert(Config.SIDE_TABLE, "CardID,Label,Text,Weight", cardid + ",," + word.getKey()+"\n"+encodedkey + ",100");
+						for(String definition : type.getValue())
+						{
+							try {
+								encodedkey = URLEncoder.encode(definition, "UTF-8");
+							} catch (UnsupportedEncodingException e) {
+								e.printStackTrace();
+							}
+							sqlite.insert(Config.SIDE_TABLE, "CardID,Label,Text,Weight", cardid + ",," + encodedkey +",50");
+						}	
+					}
+					if(count%2000 == 0)
+					{
+						System.out.println(count);
+					}
+				}
+				System.out.println(count);
 			}
 		} catch (SQLiteException e) {
 			e.printStackTrace();
 		} finally {
 			sqlite.close();
 		}
-		
-		DictionaryIO dicOut = new DictionaryIO();
-		Config.dictionary = dicOut.loadDictionary();
+
 		/*try {
 			sqlite = new SQLiteHandler(Config.DATABASE);
 		} catch (SQLiteException e) {
