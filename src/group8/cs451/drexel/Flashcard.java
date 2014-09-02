@@ -148,7 +148,7 @@ public class Flashcard {
 		}
 
 		// Weight for card is the weight of the heaviest side
-		this.setWeight(max);
+		this.setWeight(boundWeight(max));
 	}
 
 }
