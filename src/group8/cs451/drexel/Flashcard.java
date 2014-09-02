@@ -103,6 +103,10 @@ public class Flashcard {
 		}
 		
 		Flashcard f = (Flashcard)o;
+		if (this.id != f.id) {
+			return false;
+		}
+		
 		if (this.weight != f.weight) {
 			return false;
 		}

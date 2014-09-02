@@ -13,17 +13,23 @@
 package group8.cs451.drexel;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class DeckReview extends JPanel {
 	private Deck deck;
-	JPanel buttonsPanel;
+	private Flashcard displayedCard;
+	private FlashcardSide displayedSide;
+	private FlashcardSide guessedSide;
+	private JPanel buttonsPanel;
 	
 	public DeckReview(Deck deck) {
 		this.deck = deck;
@@ -37,8 +43,11 @@ public class DeckReview extends JPanel {
 		
 		setLayout(new BorderLayout());
 		
+		setupDeckReview();
+	}
+	
+	private void setupDeckReview() {
 		buttonsPanel = new JPanel();
-		//buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
 		buttonsPanel.setLayout(new BorderLayout());
 		
 		JButton checkButton = checkButton();
@@ -46,33 +55,64 @@ public class DeckReview extends JPanel {
 		
 		CardView cardView = new CardView();
 		
-		Flashcard card = getWeightedCard(deck.getCards());
-		FlashcardSide side = getWeightedSide(card.getSides());
+		displayedCard = getWeightedCard(deck.getCards());
+		displayedSide = null;
+		displayedSide = getWeightedSide(displayedCard.getSides());
+		guessedSide = getWeightedSide(displayedCard.getSides());
 		
-		cardView.setSide(new SideView(cardView, side));
+		cardView.setSide(new SideView(cardView, displayedSide));
 		
+		JLabel question = new JLabel("What is the " + guessedSide.getLabel() + "?");
+		
+		BorderLayout layout = (BorderLayout)getLayout();
+		Component c = layout.getLayoutComponent(BorderLayout.SOUTH);
+		if (null != c) {
+			remove(c);
+		}
+		c = layout.getLayoutComponent(BorderLayout.EAST);
+		if (null != c) {
+			remove(c);
+		}
+		c = layout.getLayoutComponent(BorderLayout.CENTER);
+		if (null != c) {
+			remove(c);
+		}
+		
+		add(question, BorderLayout.SOUTH);
 		add(buttonsPanel, BorderLayout.EAST);
 		add(cardView, BorderLayout.CENTER);
 	}
 	
 	private Flashcard getWeightedCard(Vector<Flashcard> cards) {
 		if (null == cards || cards.size() == 0) {
-			System.out.println("no cards");
 			return null;
 		}
 		
 		// TODO: return random card based on weights
-		return cards.get(0);
+		Random rand = new Random();
+		int randomNum = rand.nextInt(cards.size());
+		return cards.get(randomNum);
 	}
 	
 	private FlashcardSide getWeightedSide(Vector<FlashcardSide> sides) {
 		if (null == sides || sides.size() == 0) {
-			System.out.println("no sides");
 			return null;
 		}
+		if (sides.size() == 1) {
+			return sides.get(0);
+		}
 		
-		// TODO: return random side based on weights
-		return sides.get(0);
+		FlashcardSide side = displayedSide;
+		Random rand = new Random();
+		
+		// keep trying until we get a side that isn't the side being displayed
+		while (side == displayedSide) {
+			// TODO: return a random side based on weights
+			int randomNum = rand.nextInt(sides.size());
+			side = sides.get(randomNum);
+		}
+		
+		return side;
 	}
 	
 	private JButton checkButton() {
@@ -94,8 +134,17 @@ public class DeckReview extends JPanel {
 				
 				p.add(correct);
 				p.add(incorrect);
-				
 				buttonsPanel.add(p, BorderLayout.CENTER);
+				
+				CardView cardView = new CardView();
+				cardView.setSide(new SideView(cardView, guessedSide));
+				
+				BorderLayout layout = (BorderLayout)getLayout();
+				remove(layout.getLayoutComponent(BorderLayout.SOUTH));
+				remove(layout.getLayoutComponent(BorderLayout.CENTER));
+				
+				add(cardView, BorderLayout.CENTER);
+				
 				validate();
 			}
 		});
@@ -107,8 +156,11 @@ public class DeckReview extends JPanel {
 		JButton correctButton = new JButton("Correct");
 		correctButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				buttonsPanel.removeAll();
-				buttonsPanel.add(checkButton());
+				// TODO: calculate new weight for sides and for card
+				// guessedSide.setWeight(newSideWeight);
+				// displayedCard.setWeight(newCardWeight);
+				
+				setupDeckReview();
 				validate();
 			}
 		});
@@ -120,8 +172,12 @@ public class DeckReview extends JPanel {
 		JButton incorrectButton = new JButton("Incorrect");
 		incorrectButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				buttonsPanel.removeAll();
-				buttonsPanel.add(checkButton());
+				// TODO: calculate new weight for sides and for card
+				// guessedSide.setWeight(newSideWeight);
+				// displayedSide.setWeight(newSideWeight);
+				// displayedCard.setWeight(newCardWeight);
+				
+				setupDeckReview();
 				validate();
 			}
 		});

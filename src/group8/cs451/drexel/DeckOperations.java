@@ -18,7 +18,7 @@ import java.util.Vector;
 import com.almworks.sqlite4java.SQLiteException;
 
 public class DeckOperations {
-
+	
 	/**
 	 * Load the existing decks<br>
 	 * For performance reasons, empty Deck objects with only the names are loaded
@@ -76,6 +76,7 @@ public class DeckOperations {
 			
 			for (int i = 0; i < arr.size(); i++) {
 				ArrayList<String> row = arr.get(i);
+				
 				Flashcard card = new Flashcard(Integer.parseInt(row.get(0)));
 				card.setWeight(Integer.parseInt(row.get(1)));
 				
