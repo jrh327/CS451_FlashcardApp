@@ -53,13 +53,20 @@ public class SideView extends JPanel implements MouseListener {
 		info.setLayout(new BorderLayout());
 		
 		JLabel label = new JLabel(side.getLabel());
-		JTextField text = new JTextField(side.getText());
 		label.setHorizontalAlignment(SwingConstants.CENTER);
-		text.setHorizontalAlignment(SwingConstants.CENTER);
-		text.setEditable(false);
-		
 		info.add(label, BorderLayout.NORTH);
-		info.add(text, BorderLayout.CENTER);
+		
+		String t = side.getText();
+		if (t.length() > 30) {
+			JTextField text = new JTextField(t);
+			text.setHorizontalAlignment(SwingConstants.CENTER);
+			text.setEditable(false);
+			info.add(text, BorderLayout.CENTER);
+		} else {
+			JLabel text = new JLabel(t);
+			text.setHorizontalAlignment(SwingConstants.CENTER);
+			info.add(text, BorderLayout.CENTER);
+		}
 		
 		add(info, BorderLayout.CENTER);
 		
