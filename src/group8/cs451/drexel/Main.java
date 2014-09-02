@@ -98,7 +98,7 @@ public class Main {
 						} catch (UnsupportedEncodingException e) {
 							e.printStackTrace();
 						}
-						sqlite.insert(Config.SIDE_TABLE, "CardID,Label,Text,Weight", cardid + ",," + word.getKey()+"\n"+encodedkey + ",100");
+						sqlite.insert(Config.SIDE_TABLE, "CardID,Label,Text,Weight", cardid + ",Word," + word.getKey()+"\n"+encodedkey + ",100");
 						for(String definition : type.getValue())
 						{
 							try {
@@ -106,7 +106,7 @@ public class Main {
 							} catch (UnsupportedEncodingException e) {
 								e.printStackTrace();
 							}
-							sqlite.insert(Config.SIDE_TABLE, "CardID,Label,Text,Weight", cardid + ",," + encodedkey +",50");
+							sqlite.insert(Config.SIDE_TABLE, "CardID,Label,Text,Weight", cardid + ",Definition," + encodedkey +",50");
 						}	
 					}
 					if(count%2000 == 0)
