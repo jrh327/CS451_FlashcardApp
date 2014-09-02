@@ -345,7 +345,9 @@ public class DeckOperations {
 			sqlite.insert(Config.SIDE_TABLE, "CardID,Text,Label", card.getID() + ",,");
 			int sideID = (int)sqlite.getLastInsertId();
 			FlashcardSide side = new FlashcardSide(sideID);
-			side.markDirty();
+			sqlite.update(Config.SIDE_TABLE, "Label,Text,Weight",
+					side.getLabel() + "," + side.getText() + "," + side.getWeight(),
+					"ID = ?", String.valueOf(side.getID()));
 			card.addSide(side);
 		} catch (SQLiteException e) {
 			e.printStackTrace();
