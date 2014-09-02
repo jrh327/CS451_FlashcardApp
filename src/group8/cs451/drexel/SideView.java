@@ -20,6 +20,7 @@ import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -36,19 +37,7 @@ public class SideView extends JPanel implements MouseListener {
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(10, 10, 10, 10), new EtchedBorder()));
 		
-		JPanel info = new JPanel();
-		info.setBackground(Color.WHITE);
-		info.setLayout(new BorderLayout());
-		
-		JLabel label = new JLabel(side.getLabel());
-		JLabel text = new JLabel(side.getText());
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		text.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		info.add(label, BorderLayout.NORTH);
-		info.add(text, BorderLayout.CENTER);
-		
-		add(info, BorderLayout.CENTER);
+		refresh();
 		
 		addMouseListener(this);
 	}
@@ -64,9 +53,10 @@ public class SideView extends JPanel implements MouseListener {
 		info.setLayout(new BorderLayout());
 		
 		JLabel label = new JLabel(side.getLabel());
-		JLabel text = new JLabel(side.getText());
+		JTextField text = new JTextField(side.getText());
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		text.setHorizontalAlignment(SwingConstants.CENTER);
+		text.setEditable(false);
 		
 		info.add(label, BorderLayout.NORTH);
 		info.add(text, BorderLayout.CENTER);
